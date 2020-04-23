@@ -3,6 +3,9 @@ import numpy as np
 import cv2
 import argparse
 
+def sigmoid(x):
+  return 1 / (1 + np.exp(-x))
+
 def load_pb(path_to_pb):
     with tf.io.gfile.GFile(path_to_pb, "rb") as f:
         graph_def = tf.compat.v1.GraphDef()
@@ -25,8 +28,8 @@ def main():
 
     # Create a list of labels.
     with open(argv.labels, 'rt') as f:
-        labels = f.read().strip().split('\n')   
-
+        labels = f.read().strip().split('\n')  
+    
     imageFile = argv.image
     image = cv2.imread(imageFile)
 
@@ -50,15 +53,17 @@ def main():
         prob_tensor = sess.graph.get_tensor_by_name(output_layer)
         predictions, = sess.run(prob_tensor, {input_node: img})
 
+    predictions = sigmoid(predictions)
+
     print_predictions = predictions
     for i in range(5):
         print()
         print('Prediction ' + str(i) + ': ' + str(np.max(print_predictions)))
         highest_probability_index = np.argmax(print_predictions)
         print('Prediction index: ' + str(highest_probability_index))
-        print('Classified as: ' + labels[highest_probability_index])
+        print('Classified as: ' + labels[highest_probability_index-1])
         print_predictions[highest_probability_index] = 0
-        
+
 
 if __name__ == "__main__":
     main()
