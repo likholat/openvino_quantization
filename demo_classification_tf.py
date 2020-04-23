@@ -13,9 +13,9 @@ def load_pb(path_to_pb):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("graph", help=".pb graph path")
-    parser.add_argument("image", help="image path")
-    parser.add_argument("labels", help=".txt labels path")
+    parser.add_argument('--graph', help='.pb graph path', default = '../resnet_v2_101_299_frozen.pb')
+    parser.add_argument('--image', help='image path', default = '../realistic-blue-umbrella_1284-11412.jpg')
+    parser.add_argument('--labels', help='.txt labels path', default = '../classification_classes_ILSVRC2012.txt')
     argv = parser.parse_args()
 
     graph = load_pb(argv.graph)
@@ -24,9 +24,8 @@ def main():
     labels_filename = argv.labels
 
     # Create a list of labels.
-    with open(labels_filename, 'rt') as lf:
-        for l in lf:
-            labels.append(l.strip())
+    with open(argv.labels, 'rt') as f:
+        labels = f.read().strip().split('\n')   
 
     imageFile = argv.image
     image = cv2.imread(imageFile)
