@@ -39,7 +39,7 @@ def main():
     img = image.reshape((1, 299, 299, 3))
     img = (img - image_mean) / image_std
 
-    img = np.array(img, dtype=float)
+    img = img.astype(np.float32)
 
     output_layer = 'output:0'
     input_node = 'input:0'
@@ -47,20 +47,18 @@ def main():
     with tf.compat.v1.Session() as sess:
         sess.graph.as_default()
         tf.import_graph_def(graph.as_graph_def(), name = "")
-        try:
-            prob_tensor = sess.graph.get_tensor_by_name(output_layer)
-            predictions, = sess.run(prob_tensor, {input_node: img})
-        except KeyError:
-            print ("Couldn't find classification output layer: " + output_layer + ".")
-            print ("Verify this a model exported from an Object Detection project.")
-            exit(-1)
+        prob_tensor = sess.graph.get_tensor_by_name(output_layer)
+        predictions, = sess.run(prob_tensor, {input_node: img})
 
-    # Print the highest probability label
-    highest_probability_index = np.argmax(predictions)
-    print()
-    print(highest_probability_index)
-    print('Classified as: ' + labels[highest_probability_index])
-    print()
+    print_predictions = predictions
+    for i in range(5):
+        print()
+        print('Prediction ' + str(i) + ': ' + str(np.max(print_predictions)))
+        highest_probability_index = np.argmax(print_predictions)
+        print('Prediction index: ' + str(highest_probability_index))
+        print('Classified as: ' + labels[highest_probability_index])
+        print_predictions[highest_probability_index] = 0
+        
 
 if __name__ == "__main__":
     main()
