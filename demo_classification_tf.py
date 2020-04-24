@@ -10,9 +10,7 @@ def load_pb(path_to_pb):
     with tf.io.gfile.GFile(path_to_pb, "rb") as f:
         graph_def = tf.compat.v1.GraphDef()
         graph_def.ParseFromString(f.read())
-    with tf.Graph().as_default() as graph:
-        tf.import_graph_def(graph_def, name='')
-        return graph
+        return graph_def
 
 def main():
     parser = argparse.ArgumentParser()
@@ -42,14 +40,13 @@ def main():
     input_node = 'input:0'
 
     with tf.compat.v1.Session() as sess:
-        # sess.graph.as_default()
-        tf.import_graph_def(graph.as_graph_def(), name = "")
+        tf.import_graph_def(graph, name = "")
         prob_tensor = sess.graph.get_tensor_by_name(output_layer)
         predictions, = sess.run(prob_tensor, {input_node: img})
 
     predictions = sigmoid(predictions)
 
-    for i in np.argsort(-1*predictions)[:5]:
+    for i in np.argsort(predictions)[::-1][:5]:
         print(("%.4f" % predictions[i]) + ' ' + labels[i - 1])
 
 if __name__ == "__main__":
