@@ -42,22 +42,15 @@ def main():
     input_node = 'input:0'
 
     with tf.compat.v1.Session() as sess:
-        sess.graph.as_default()
+        # sess.graph.as_default()
         tf.import_graph_def(graph.as_graph_def(), name = "")
         prob_tensor = sess.graph.get_tensor_by_name(output_layer)
         predictions, = sess.run(prob_tensor, {input_node: img})
 
     predictions = sigmoid(predictions)
-    ind = np.argsort(predictions)
-    length = len(predictions)
 
-    for i in range(5):
-        print()
-        print('Prediction ' + str(i) + ': ')
-        highest_probability_index = ind[length - i - 1]
-        print('Probability: ' + str(predictions[highest_probability_index]))
-        print('Prediction index: ' + str(highest_probability_index))
-        print('Classified as: ' + labels[highest_probability_index - 1])
+    for i in np.argsort(-1*predictions)[:5]:
+        print(("%.4f" % predictions[i]) + ' ' + labels[i - 1])
 
 if __name__ == "__main__":
     main()
