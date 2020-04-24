@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-import cv2
+import cv2 as cv
 import argparse
 
 def sigmoid(x):
@@ -16,32 +16,26 @@ def load_pb(path_to_pb):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--graph', help='.pb graph path', default = '../resnet_v2_101_299_frozen.pb')
-    parser.add_argument('--image', help='image path', default = '../realistic-blue-umbrella_1284-11412.jpg')
-    parser.add_argument('--labels', help='.txt labels path', default = '../classification_classes_ILSVRC2012.txt')
+    parser.add_argument('--graph', help='.pb graph path', default = 'resnet_v2_101_299_frozen.pb')
+    parser.add_argument('--image', help='image path', default = 'realistic-blue-umbrella_1284-11412.jpg')
+    parser.add_argument('--labels', help='.txt labels path', default = 'classification_classes_ILSVRC2012.txt')
     argv = parser.parse_args()
 
     graph = load_pb(argv.graph)
 
-    labels = []
-    labels_filename = argv.labels
-
-    # Create a list of labels.
     with open(argv.labels, 'rt') as f:
         labels = f.read().strip().split('\n')  
-    
-    imageFile = argv.image
-    image = cv2.imread(imageFile)
+
+    img = cv.imread(argv.image)
 
     image_mean = 127.5
     image_std = 127.5
     image_size_x = 299
     image_size_y = 299 
 
-    image = cv2.resize(image, (image_size_x, image_size_y), interpolation = cv2.INTER_LINEAR)
-    img = image.reshape((1, 299, 299, 3))
+    img = cv.resize(img, (image_size_x, image_size_y), interpolation = cv.INTER_LINEAR)
+    img = np.expand_dims(img, axis = 0)
     img = (img - image_mean) / image_std
-
     img = img.astype(np.float32)
 
     output_layer = 'output:0'
@@ -54,16 +48,16 @@ def main():
         predictions, = sess.run(prob_tensor, {input_node: img})
 
     predictions = sigmoid(predictions)
+    ind = np.argsort(predictions)
+    length = len(predictions)
 
-    print_predictions = predictions
     for i in range(5):
         print()
-        print('Prediction ' + str(i) + ': ' + str(np.max(print_predictions)))
-        highest_probability_index = np.argmax(print_predictions)
+        print('Prediction ' + str(i) + ': ')
+        highest_probability_index = ind[length - i - 1]
+        print('Probability: ' + str(predictions[highest_probability_index]))
         print('Prediction index: ' + str(highest_probability_index))
-        print('Classified as: ' + labels[highest_probability_index-1])
-        print_predictions[highest_probability_index] = 0
-
+        print('Classified as: ' + labels[highest_probability_index - 1])
 
 if __name__ == "__main__":
     main()
