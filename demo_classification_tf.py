@@ -14,9 +14,9 @@ def load_pb(path_to_pb):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--graph', help='.pb graph path', default = 'resnet_v2_101_299_frozen.pb')
-    parser.add_argument('--image', help='image path', default = 'realistic-blue-umbrella_1284-11412.jpg')
-    parser.add_argument('--labels', help='.txt labels path', default = 'classification_classes_ILSVRC2012.txt')
+    parser.add_argument('--graph', help='.pb graph path', default='resnet_v2_101_299_frozen.pb')
+    parser.add_argument('--image', help='image path', required=True)
+    parser.add_argument('--labels', help='.txt labels path', default='classification_classes_ILSVRC2012.txt')
     argv = parser.parse_args()
 
     graph = load_pb(argv.graph)
