@@ -31,8 +31,8 @@ def main():
     image_size_x = 299
     image_size_y = 299 
 
-    img = cv.resize(img, (image_size_x, image_size_y), interpolation = cv.INTER_LINEAR)
-    img = np.expand_dims(img, axis = 0)
+    img = cv.resize(img, (image_size_x, image_size_y))
+    img = np.expand_dims(img, axis=0)
     img = (img - image_mean) / image_std
     img = img.astype(np.float32)
 
