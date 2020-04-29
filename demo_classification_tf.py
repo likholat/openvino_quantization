@@ -2,15 +2,7 @@ import tensorflow as tf
 import numpy as np
 import cv2 as cv
 import argparse
-
-def sigmoid(x):
-  return 1 / (1 + np.exp(-x))
-
-def load_pb(path_to_pb):
-    with tf.io.gfile.GFile(path_to_pb, "rb") as f:
-        graph_def = tf.compat.v1.GraphDef()
-        graph_def.ParseFromString(f.read())
-        return graph_def
+from classification import Classification
 
 def main():
     parser = argparse.ArgumentParser()
@@ -19,7 +11,7 @@ def main():
     parser.add_argument('--labels', help='.txt labels path', default='classification_classes_ILSVRC2012.txt')
     argv = parser.parse_args()
 
-    graph = load_pb(argv.graph)
+    graph = Classification.load_pb(argv.graph)
 
     with open(argv.labels, 'rt') as f:
         labels = f.read().strip().split('\n')  
@@ -44,7 +36,7 @@ def main():
         prob_tensor = sess.graph.get_tensor_by_name(output_layer)
         predictions, = sess.run(prob_tensor, {input_node: img})
 
-    predictions = sigmoid(predictions)
+    predictions = Classification.sigmoid(predictions)
 
     for i in np.argsort(predictions)[::-1][:5]:
         print(("%.4f" % predictions[i]) + ' ' + labels[i - 1])
