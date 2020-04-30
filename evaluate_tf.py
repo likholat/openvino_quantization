@@ -20,10 +20,9 @@ def main():
 
     top_1 = 0
     top_5 = 0
-    size = len(vals)
 
-    for i in range(size):
-        img_path, label = vals[i].rsplit(' ')
+    for val in vals:
+        img_path, label = val.rsplit(' ')
         label = int(label)
 
         imgPath = argv.databasePath + img_path
