@@ -7,7 +7,7 @@ import cv2 as cv
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--graph', help='.pb graph path', default='resnet_v2_101_299_frozen.pb')
-    parser.add_argument('--databasePath', help='database path', required=True)
+    parser.add_argument('--dataset', help='database path', required=True)
     argv = parser.parse_args()
 
     network = TensorFlowClassification(argv.graph)
@@ -20,12 +20,13 @@ def main():
 
     top_1 = 0
     top_5 = 0
+    size = len(vals)
 
-    for val in vals:
-        img_path, label = val.rsplit(' ')
+    for value in vals:
+        img_path, label = value.rsplit(' ')
         label = int(label)
 
-        imgPath = argv.databasePath + img_path
+        imgPath = argv.dataset + img_path
         img = cv.imread(imgPath)
         val = label
         results, probability = network.classify(img, 5)
