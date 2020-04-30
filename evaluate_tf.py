@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import argparse
 from classification import Classification
+import cv2 as cv
 
 def main():
     parser = argparse.ArgumentParser()
@@ -11,7 +12,7 @@ def main():
     parser.add_argument('--rightVals', help='.txt val path', default='val.txt')
     argv = parser.parse_args()
 
-    graph = Classification.load_pb(argv.graph)
+    graph = Classification(argv.graph)
 
     with open(argv.labels, 'rt') as f:
         labels = f.read().strip().split('\n')  
@@ -26,8 +27,9 @@ def main():
 
     for i in range(size):
         imgPath = argv.databasePath + vals[i].rsplit(' ')[0]
+        img = cv.imread(imgPath)
         val = int(vals[i].rsplit(' ')[1])
-        results = Classification.classify(graph, imgPath)
+        results = graph.classify(img)
 
         if val == (results[0] - 1):
             top_1 += 1
