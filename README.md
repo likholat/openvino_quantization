@@ -7,7 +7,7 @@ https://storage.googleapis.com/download.tensorflow.org/models/tflite_11_05_08/re
 
 To run demo_classification_tf.py:
 ```bash
-python demo_classification_tf.py --graph  /<USER_DIRECTORY>/resnet_v2_101_299_frozen.pb --image /<USER_DIRECTORY>/<IMAGE_NAME>.JPEG
+python demo_classification_tf.py --graph resnet_v2_101_299_frozen.pb --image example.jpeg
 ```
 
 To run evaluate_tf.py:

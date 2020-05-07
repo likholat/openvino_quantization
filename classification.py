@@ -23,7 +23,6 @@ class TensorFlowClassification:
         output_layer = 'output:0'
         input_node = 'input:0'
         
-        # 
         prob_tensor = self.sess.graph.get_tensor_by_name(output_layer)
 
         img = cv.resize(img, (image_size_x, image_size_y))
@@ -34,4 +33,4 @@ class TensorFlowClassification:
         predictions, = self.sess.run(prob_tensor, {input_node: img})
         predictions = self.sigmoid(predictions)
 
-        return [np.argsort(predictions)[::-1][:top_k], predictions[::-1][:top_k] ]
+        return predictions[::-1][:top_k], np.argsort(predictions)[::-1][:top_k]
