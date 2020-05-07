@@ -33,4 +33,4 @@ class TensorFlowClassification:
         predictions, = self.sess.run(prob_tensor, {input_node: img})
         predictions = self.sigmoid(predictions)
 
-        return predictions[::-1][:top_k], np.argsort(predictions)[::-1][:top_k]
+        return np.sort(predictions)[::-1][:top_k], np.argsort(predictions)[::-1][:top_k]
