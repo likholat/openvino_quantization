@@ -23,7 +23,6 @@ def main():
     top_5 = 0
 
     for value in vals:
-        i = i+1
         img_path, label = value.rsplit(' ')
         label = int(label) + 1
 
