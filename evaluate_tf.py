@@ -1,13 +1,9 @@
 import tensorflow as tf
 import numpy as np
+import os
 import argparse
 from classification import TensorFlowClassification
 import cv2 as cv
-
-def check_path(path):
-    if path[-1] != '/' and path[-1] != '\\':
-        path = path + '/'
-    return path
 
 def main():
     parser = argparse.ArgumentParser()
@@ -16,22 +12,22 @@ def main():
     argv = parser.parse_args()
 
     network = TensorFlowClassification(argv.graph)
-    dataset = check_path(argv.dataset)
 
     with open('classification_classes_ILSVRC2012.txt', 'rt') as f:
         labels = f.read().strip().split('\n')  
 
-    with open(dataset + 'val.txt', 'rt') as f:
+    with open(os.path.join(argv.dataset, 'val.txt'), 'rt') as f:
         vals = f.read().strip().split('\n')
 
     top_1 = 0
     top_5 = 0
 
     for value in vals:
+        i = i+1
         img_path, label = value.rsplit(' ')
         label = int(label) + 1
 
-        imgPath = dataset + img_path
+        imgPath = os.path.join(argv.dataset, img_path)
         img = cv.imread(imgPath)
         probability, results = network.classify(img, 5)
 
