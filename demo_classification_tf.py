@@ -22,8 +22,7 @@ def main():
     probability, result= network.classify(img, top_k)
 
     for i in range(top_k):
-        print(("%.4f" % probability[i]) + ' ' + str(result[i]) + ' ' + labels[result[i] - 1])
-    # we need -1 for: labels[result[i] - 1], because classification_classes_ILSVRC2012.txt starts with 1, our labels starts with 0
+        print(("%.4f" % probability[i]) + ' ' + str(result[i]) + ' ' + labels[result[i]])
 
 if __name__ == "__main__":
     main()
