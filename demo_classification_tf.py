@@ -18,11 +18,10 @@ def main():
 
     img = cv.imread(argv.image) 
 
-    top_k = 5
-    probability, result= network.classify(img, top_k)
+    probs, indices = network.classify(img, top_k = 5)
 
-    for i in range(top_k):
-        print(("%.4f" % probability[i]) + ' ' + str(result[i]) + ' ' + labels[result[i]])
+    for prob, idx in zip(probs, indices):
+        print(("%.4f" % prob) + ' ' + str(idx) + ' ' + labels[idx])
 
 if __name__ == "__main__":
     main()

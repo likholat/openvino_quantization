@@ -13,9 +13,6 @@ def main():
 
     network = TensorFlowClassification(argv.graph)
 
-    with open('classification_classes_ILSVRC2012.txt', 'rt') as f:
-        labels = f.read().strip().split('\n')  
-
     with open(os.path.join(argv.dataset, 'val.txt'), 'rt') as f:
         vals = f.read().strip().split('\n')
 
@@ -30,10 +27,10 @@ def main():
         img = cv.imread(imgPath)
         probability, results = network.classify(img, 5)
 
-        if label == (results[0]):
+        if label == results[0]:
             top_1 += 1
 
-        if label in (results):
+        if label in results:
             top_5 += 1
 
     print()
