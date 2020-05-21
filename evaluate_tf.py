@@ -19,7 +19,13 @@ def main():
     top_1 = 0
     top_5 = 0
 
+    i = 0
+
     for value in vals:
+        if(i % 1000 == 0):
+            print(i)
+        i = i + 1
+
         img_path, label = value.rsplit(' ')
         label = int(label) + 1
 
@@ -32,6 +38,7 @@ def main():
 
         if label in results:
             top_5 += 1
+
 
     print()
     print('Top 1 accuracy: ' + str(top_1 / len(vals)))
