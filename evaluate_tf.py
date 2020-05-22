@@ -19,12 +19,9 @@ def main():
     top_1 = 0
     top_5 = 0
 
-    i = 0
-
-    for value in vals:
-        if(i % 1000 == 0):
+    for i, value in enumerate(vals):
+        if(i % 10 == 0):
             print(i)
-        i = i + 1
 
         img_path, label = value.rsplit(' ')
         label = int(label) + 1

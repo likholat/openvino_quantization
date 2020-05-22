@@ -12,7 +12,7 @@ python demo_classification_tf.py --graph resnet_v2_101_299_frozen.pb --image exa
 
 To validate TensorFlow model on ImageNet dataset run:
 ```bash
-python3 evaluate_tf.py --graph /resnet_v2_101_299_frozen.pb --dataset /ILSVRC2012_img_val
+python3 evaluate_tf.py --graph /resnet_v2_101_299_frozen.pb --dataset ILSVRC2012_img_val
 ```
 Estimated accuracy:
 ```bash
