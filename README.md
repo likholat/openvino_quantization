@@ -19,3 +19,21 @@ Estimated accuracy:
 Top 1 accuracy: 0.69054
 Top 5 accuracy: 0.89814
 ```
+
+# openvino_quantization
+
+To initialise OpenVINO environment variables open the Command Prompt, and run the setupvars.bat batch file:
+``bash
+cd C:\Program Files (x86)\IntelSWTools\openvino\bin\
+setupvars.bat
+``
+
+To validate OpenVINO model on one image run:
+``bash
+python demo_classification_opvn.py --graph /path/to/resnet_converted --image /path/to/example.jpeg
+``
+
+To validate OpenVINO model on ImageNet dataset run:
+``bash
+python evaluate_opvn.py --graph /path/to/resnet_converted --dataset /path/to/ILSVRC2012_img_val
+``
