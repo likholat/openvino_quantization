@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import argparse
-from classification import TensorFlowClassification
+from classification.classification_tf import TensorFlowClassification
 import cv2 as cv
 
 def main():

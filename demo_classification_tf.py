@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import cv2 as cv
 import argparse
-from classification import TensorFlowClassification
+from classification.classification_tf import TensorFlowClassification
 
 def main():
     parser = argparse.ArgumentParser()
