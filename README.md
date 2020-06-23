@@ -22,10 +22,33 @@ Top 5 accuracy: 0.89814
 
 # openvino_quantization
 
-Download ```convert.py``` script:
-https://gist.github.com/dkurt/3486f09fafe568ee20e500310dedcb9f
+Use this script before converting:
+``bash
+import tensorflow as tf
+import argparse
+from tensorflow.python.tools import optimize_for_inference_lib
 
-Run the convert.py before converting the model, this script creates resnet_v2_101_299_opt.pb file in current directory:
+parser = argparse.ArgumentParser()
+parser.add_argument('--graph', help='.pb graph path', default='resnet_v2_101_299_frozen.pb')
+argv = parser.parse_args()
+
+pb_file = argv.graph
+graph_def = tf.compat.v1.GraphDef()
+
+try:
+    with tf.io.gfile.GFile(pb_file, 'rb') as f:
+        graph_def.ParseFromString(f.read())
+except:
+    with tf.gfile.FastGFile(pb_file, 'rb') as f:
+        graph_def.ParseFromString(f.read())
+
+graph_def = optimize_for_inference_lib.optimize_for_inference(graph_def, ['input'], ['output'], tf.float32.as_datatype_enum)
+
+with tf.gfile.FastGFile('resnet_v2_101_299_opt.pb', 'wb') as f:
+   f.write(graph_def.SerializeToString())t
+``
+
+Run the script before converting the model, it creates resnet_v2_101_299_opt.pb file in current directory:
 ``bash
 python convert.py --graph path/to/resnet_v2_101_299_frozen.pb
 ``
@@ -33,12 +56,12 @@ python convert.py --graph path/to/resnet_v2_101_299_frozen.pb
 To convert TensorFlow model to Intermediate Representation:
 ``bash
 cd folder/for/IR/model
-python path/to/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model path/to/resnet_v2_101_299_opt.pb --input_shape "[1,299,299,3]"
+python ./opt/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model path/to/resnet_v2_101_299_opt.pb --input_shape "[1,299,299,3]"
 ``
 
 To initialise OpenVINO environment variables open the Command Prompt, and run the setupvars.bat batch file:
 ``bash
-cd C:\Program Files (x86)\IntelSWTools\openvino\bin\
+cd C:/Program Files (x86)/IntelSWTools/openvino/bin/
 setupvars.bat
 ``
 
