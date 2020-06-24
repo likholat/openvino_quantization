@@ -46,7 +46,6 @@ class MyDataLoader(DataLoader):
             self.images.append(img_path)
             self.annotations.append(label)
 
-        self.batch_size = 1
         self.images = self.images[:1000]
 
     @property
@@ -75,7 +74,7 @@ class MyDataLoader(DataLoader):
 class MyMetric(Metric):
     def __init__(self):
         super().__init__()
-        self.name = "customMetric - Dice score"
+        self.name = "Accuracy"
         self._values = []
         self.round = 1
 
@@ -87,12 +86,9 @@ class MyMetric(Metric):
     @property
     def avg_value(self):
         """ Returns accuracy metric value for all model outputs. """
-        value = np.ravel(self._values).mean()
-        print("Round #{}    Mean {} = {}".format(self.round, self.name, value))
-
+        print(len(self._values))    #print res: 300
+        print("Round #{}  {} = {}".format(self.round, self.name, sum(self._values)/len(self._values)))
         self.round += 1
-
-        return {self.name: value}
 
     def update(self, outputs, labels):
         """ Updates prediction matches.
@@ -103,23 +99,12 @@ class MyMetric(Metric):
         Put your custom metric code here.
         The metric gets appended to the list of metric values
         """
+        result = np.argsort(outputs[0][0])[::-1][:5]
 
-        def dice_score(self, pred, truth):
-            """
-            Sorensen Dice score
-            Measure of the overlap between the prediction and ground truth masks
-            """
-            numerator = np.sum(np.round(pred) * truth) * 2.0
-            denominator = np.sum(np.round(pred)) + np.sum(truth)
-
-            return numerator / denominator
-
-
-        metric = dice_score(labels[0], outputs[0], 1)
-
-        print("Dice = {}".format(metric))
-
-        self._values.append(metric)
+        if (result[0] == labels[0]):
+            self._values.append(1)
+        else:
+            self._values.append(0)
 
     def reset(self):
         """ Resets collected matches """
