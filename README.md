@@ -7,12 +7,12 @@ https://storage.googleapis.com/download.tensorflow.org/models/tflite_11_05_08/re
 
 To validate TensorFlow model on one image run:
 ```bash
-python demo_classification_tf.py --graph /path/to/resnet_v2_101_299_frozen.pb --image /path/to/example.jpeg
+python3 demo_classification.py --graph /path/to/resnet_v2_101_299_frozen.pb --image /path/to/example.jpeg --engine tf
 ```
 
 To validate TensorFlow model on ImageNet dataset run:
 ```bash
-python3 evaluate_tf.py --graph /path/to/resnet_v2_101_299_frozen.pb --dataset /path/to/ILSVRC2012_img_val
+python3 evaluate.py --graph /path/to/resnet_v2_101_299_frozen.pb --dataset /path/to/ILSVRC2012_img_val --engine tf
 ```
 Estimated accuracy:
 ```bash
@@ -20,57 +20,46 @@ Top 1 accuracy: 0.69054
 Top 5 accuracy: 0.89814
 ```
 
-# openvino_quantization
+# openvino_sample
 
-Use this script before converting:
+Run the ```convert.py``` script before converting the model, it creates resnet_v2_101_299_opt.pb file in current directory:
 ``bash
-import tensorflow as tf
-import argparse
-from tensorflow.python.tools import optimize_for_inference_lib
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--graph', help='.pb graph path', default='resnet_v2_101_299_frozen.pb')
-argv = parser.parse_args()
-
-pb_file = argv.graph
-graph_def = tf.compat.v1.GraphDef()
-
-try:
-    with tf.io.gfile.GFile(pb_file, 'rb') as f:
-        graph_def.ParseFromString(f.read())
-except:
-    with tf.gfile.FastGFile(pb_file, 'rb') as f:
-        graph_def.ParseFromString(f.read())
-
-graph_def = optimize_for_inference_lib.optimize_for_inference(graph_def, ['input'], ['output'], tf.float32.as_datatype_enum)
-
-with tf.gfile.FastGFile('resnet_v2_101_299_opt.pb', 'wb') as f:
-   f.write(graph_def.SerializeToString())t
-``
-
-Run the script before converting the model, it creates resnet_v2_101_299_opt.pb file in current directory:
-``bash
-python convert.py --graph path/to/resnet_v2_101_299_frozen.pb
+python3 convert.py --graph resnet_v2_101_299_frozen.pb
 ``
 
 To convert TensorFlow model to Intermediate Representation:
 ``bash
 cd folder/for/IR/model
-python ./opt/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model path/to/resnet_v2_101_299_opt.pb --input_shape "[1,299,299,3]"
+python3 /opt/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model resnet_v2_101_299_opt.pb --input_shape "[1,299,299,3]"
 ``
 
-To initialise OpenVINO environment variables open the Command Prompt, and run the setupvars.bat batch file:
+To initialise OpenVINO environment variables use:
 ``bash
-cd C:/Program Files (x86)/IntelSWTools/openvino/bin/
-setupvars.bat
+source /opt/intel/openvino/bin/setupvars.sh
 ``
 
 To validate OpenVINO model on one image run:
 ``bash
-python demo_classification_opvn.py --graph /path/to/resnet_converted --image /path/to/example.jpeg
+python3 demo_classification.py --graph /path/to/resnet_converted --image example.jpeg --engine opvn
 ``
 
 To validate OpenVINO model on ImageNet dataset run:
 ``bash
-python evaluate_opvn.py --graph /path/to/resnet_converted --dataset /path/to/ILSVRC2012_img_val
+python3 evaluate.py --graph /path/to/resnet_converted --dataset ILSVRC2012_img_val --engine opvn
+``
+
+To quantizes the model to int8 model run:
+``bash
+python3 calibration.py --xml resnet_v2_101_299_opt.xml --bin resnet_v2_101_299_opt.bin --data ILSVRC2012_img_val --annotation ILSVRC2012_img_val/val.txt
+``
+This script created ```/model/optimised``` folder in current folder with quantized model.
+
+To validate int8 model on one image run:
+``bash
+python3 demo_classification.py --graph /model/optimized --image example.jpeg --engine opvn
+``
+
+To validate int8 model on ImageNet dataset run:
+``bash
+python3 evaluate.py --graph /model/optimized --dataset ILSVRC2012_img_val --engine opvn
 ``
