@@ -28,7 +28,7 @@ def main():
     top_5 = 0
 
     for i, value in enumerate(vals):
-        if(i % 10 == 0):
+        if(i % 1000 == 0):
             print(i)
 
         img_path, label = value.rsplit(' ')

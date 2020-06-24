@@ -109,7 +109,7 @@ class AccuracyMetric(Metric):
         return True
 
     def get_attributes(self):
-        return {self.name: {"direction": "higher-better", "type": ""}}
+        return {}
 
 model_config = Dict({
     'model_name': argv.model_name,
