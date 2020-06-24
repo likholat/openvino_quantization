@@ -21,7 +21,7 @@ parser.add_argument("--int8_dir", default="./model/optimized", help="INT8 direct
 
 argv = parser.parse_args()
 
-class MyDataLoader(DataLoader):
+class DatasetsDataLoader(DataLoader):
  
     def __init__(self, config):
         if not isinstance(config, Dict):
@@ -70,7 +70,7 @@ class MyDataLoader(DataLoader):
 
         return (item, self.annotations[item]), img
 
-class MyMetric(Metric):
+class AccuracyMetric(Metric):
     def __init__(self):
         super().__init__()
         self.name = "Accuracy"
@@ -138,8 +138,8 @@ algorithms = [
 
 model = load_model(model_config)
 
-data_loader = MyDataLoader(dataset_config)
-metric = MyMetric()
+data_loader = DatasetsDataLoader(dataset_config)
+metric = AccuracyMetric()
 
 loss = None
 engine = IEEngine(engine_config, data_loader, metric, loss)
