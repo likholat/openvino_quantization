@@ -14,7 +14,6 @@ parser = argparse.ArgumentParser(description="Quantizes OpenVino model to int8."
                                     add_help=True, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument("--xml", default="resnet_v2_101_299_opt.xml", help="XML file for OpenVINO to quantize")
-parser.add_argument("--bin", default="resnet_v2_101_299_opt.bin", help="BIN file for OpenVINO to quantize")
 parser.add_argument("--model_name", default="resnet_v2_101_299_opt", help="OpenVINO model name")
 parser.add_argument("--annotation", default="val.txt", help="Manifest file (txt file with filenames of images and labels)")
 parser.add_argument("--data", default="ILSVRC2012_img_val", help="Data directory root")
@@ -76,7 +75,6 @@ class MyMetric(Metric):
         super().__init__()
         self.name = "Accuracy"
         self._values = []
-        self.round = 1
 
     @property
     def value(self):
@@ -86,9 +84,7 @@ class MyMetric(Metric):
     @property
     def avg_value(self):
         """ Returns accuracy metric value for all model outputs. """
-        print(len(self._values))    #print res: 300
-        print("Round #{}  {} = {}".format(self.round, self.name, sum(self._values)/len(self._values)))
-        self.round += 1
+        print("{} = {}".format(self.name, sum(self._values)/len(self._values)))
 
     def update(self, outputs, labels):
         """ Updates prediction matches.
@@ -99,12 +95,9 @@ class MyMetric(Metric):
         Put your custom metric code here.
         The metric gets appended to the list of metric values
         """
-        result = np.argsort(outputs[0][0])[::-1][:5]
+        result = np.argsort(outputs[0][0])[::-1][:1]
 
-        if (result[0] == labels[0]):
-            self._values.append(1)
-        else:
-            self._values.append(0)
+        self._values.append(1 if result[0] == labels[0] else 0)
 
     def reset(self):
         """ Resets collected matches """
@@ -121,7 +114,7 @@ class MyMetric(Metric):
 model_config = Dict({
     'model_name': argv.model_name,
     "model": argv.xml,
-    "weights": argv.bin
+    "weights": argv.xml.split('.xml')[0] + '.bin'
 })
 engine_config = {
     'device': 'CPU',

@@ -4,30 +4,28 @@ import os
 import argparse
 import cv2 as cv
 
-from classification.classification_tf import TensorFlowClassification
-from classification.classification_opvn import OpenVinoClassification
-
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--graph', help='.pb graph path', default='resnet_v2_101_299_frozen.pb')
+    parser.add_argument('--xml', help='.xml model path', default='resnet_v2_101_299_frozen.pb')
     parser.add_argument('--dataset', help='database path', required=True)
     parser.add_argument('--engine', help='target engine', required=True, choices=['tf', 'opvn'])
     argv = parser.parse_args()
+
+    if argv.engine == 'tf':
+        from classification.classification_tf import TensorFlowClassification
+        network = TensorFlowClassification(argv.graph)
+    else:
+        from classification.classification_opvn import OpenVinoClassification
+        model_xml = os.path.join(argv.xml)
+        model_bin = model_xml.split('.xml')[0] + '.bin'
+
+        network = OpenVinoClassification(model_xml, model_bin)
 
     with open(os.path.join(argv.dataset, 'val.txt'), 'rt') as f:
         vals = f.read().strip().split('\n')
 
     top_1 = 0
     top_5 = 0
-
-    if (argv.engine == 'tf'):
-        network = TensorFlowClassification(argv.graph)
-        
-    elif (argv.engine == 'opvn'):
-        model_xml = os.path.join(argv.graph, 'resnet_v2_101_299_opt.xml')
-        model_bin = os.path.join(argv.graph, 'resnet_v2_101_299_opt.bin')
-
-        network = OpenVinoClassification(model_xml, model_bin)
 
     for i, value in enumerate(vals):
         if(i % 10 == 0):

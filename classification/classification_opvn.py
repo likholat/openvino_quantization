@@ -8,7 +8,7 @@ class OpenVinoClassification:
     def __init__(self, path_to_xml, path_to_bin): 
         self.ie = IECore()
         self.net = self.ie.read_network(model=path_to_xml, weights=path_to_bin)
-
+        self.exec_net = self.ie.load_network(network=self.net, device_name='CPU')
 
     def sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
@@ -28,8 +28,7 @@ class OpenVinoClassification:
         img = img.astype(np.float32)
         img = img.transpose((0, 3, 1, 2))
 
-        exec_net = self.ie.load_network(network=self.net, device_name='CPU')
-        predictions = exec_net.infer(inputs={input_blob: img})
+        predictions = self.exec_net.infer(inputs={input_blob: img})
         predictions = predictions[out_blob]
         predictions = self.sigmoid(predictions)
 
