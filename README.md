@@ -79,9 +79,11 @@ Throughput: 34.23 FPS
 
 Estimated accuracy for OpenVINO model:
 ```bash
-
+Top 1 accuracy: 0.69054
+Top 5 accuracy: 0.89814
 ```
 Estimated accuracy for int8 model:
 ```bash
-
+Top 1 accuracy: 0.69316
+Top 5 accuracy: 0.89776
 ```
