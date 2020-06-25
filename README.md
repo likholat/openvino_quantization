@@ -83,7 +83,6 @@ python3 evaluate.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.x
 | OpenVINO model   | 0.69054 | 0.89814 |
 | INT8 model       | 0.69316 | 0.89776 |
 
-
 ## Benchmark App results
 
 |                  | Latency  | Throughput |
