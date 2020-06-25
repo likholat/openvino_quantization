@@ -75,8 +75,6 @@ python3 evaluate.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.x
 
 ## Estimated accuracy
 
-Сomparing the benchmark_app results we got an acceleration of about 1.5 times for int8 model:
-
 | Accuracy         | Top 1   | Top 5   |
 |:----------------:|:-------:|:-------:|
 | TensorFlow model | 0.69054 | 0.89814 |
@@ -84,6 +82,8 @@ python3 evaluate.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.x
 | INT8 model       | 0.69316 | 0.89776 |
 
 ## Benchmark App results
+
+Сomparing the benchmark_app results we got an acceleration of about 1.5 times for int8 model:
 
 |                  | Latency  | Throughput |
 |:----------------:|:--------:|:----------:|
