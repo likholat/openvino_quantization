@@ -83,7 +83,7 @@ python3 evaluate.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.x
 
 ## Benchmark App results
 
-Сomparing the ```benchmark_app``` results we got an acceleration of about 1.5 times for int8 model:
+Сomparing the ```benchmark_app``` results we got an acceleration of about 1.5 times for **INT8 model**:
 
 |                  | Latency  | Throughput |
 |:----------------:|:--------:|:----------:|
