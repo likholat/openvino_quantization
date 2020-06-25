@@ -22,54 +22,54 @@ python3 evaluate.py --engine tf --graph resnet_v2_101_299_frozen.pb --dataset IL
 
 To initialise OpenVINO environment variables use:
 
-``bash
+```bash
 source /opt/intel/openvino/bin/setupvars.sh
-``
+```
 
 Run the ```convert.py``` script before converting the model, it creates ```resnet_v2_101_299_opt.pb``` file in current directory:
 
-``bash
+```bash
 python3 convert.py --graph resnet_v2_101_299_frozen.pb
-``
+```
 
 To convert TensorFlow model to Intermediate Representation:
 
-``bash
+```bash
 cd folder/for/IR/model
 python3 ~/openvino/model-optimizer/mo_tf.py --input_shape "[1,299,299,3]" --input_model resnet_v2_101_299_opt.pb 
-``
+```
 
 To validate OpenVINO model on one image run:
 
-``bash
+```bash
 python3 demo_classification.py --engine opvn --xml resnet_v2_101_299_opt.xml --image example.jpeg 
-``
+```
 
 To validate OpenVINO model on ImageNet dataset run:
 
-``bash
+```bash
 python3 evaluate.py --engine opvn --xml resnet_v2_101_299_opt.xml --dataset ILSVRC2012_img_val
-``
+```
 
 To quantizes the model to int8 model run:
 
-``bash
+```bash
 python3 calibration.py --xml resnet_v2_101_299_opt.xml --data ILSVRC2012_img_val --annotation ILSVRC2012_img_val/val.txt
-``
+```
 
 This script created ```/model/optimised``` folder in current folder with quantized model.
 
 To validate int8 model on one image run:
 
-``bash
+```bash
 python3 demo_classification.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.xml --image example.jpeg 
-``
+```
 
 To validate int8 model on ImageNet dataset run:
 
-``bash
+```bash
 python3 evaluate.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.xml --dataset ILSVRC2012_img_val
-``
+```
 
 # Results
 
