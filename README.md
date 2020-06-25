@@ -56,6 +56,7 @@ To quantizes the model to int8 model run:
 ``bash
 python3 calibration.py --xml resnet_v2_101_299_opt.xml --data ILSVRC2012_img_val --annotation ILSVRC2012_img_val/val.txt
 ``
+
 This script created ```/model/optimised``` folder in current folder with quantized model.
 
 To validate int8 model on one image run:
@@ -74,13 +75,14 @@ python3 evaluate.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.x
 
 ## Estimated accuracy
 
+Сomparing the benchmark_app results we got an acceleration of about 1.5 times for int8 model:
+
 | Accuracy         | Top 1   | Top 5   |
 |:----------------:|:-------:|:-------:|
 | TensorFlow model | 0.69054 | 0.89814 |
 | OpenVINO model   | 0.69054 | 0.89814 |
 | INT8 model       | 0.69316 | 0.89776 |
 
-Сomparing the benchmark_app results we got an acceleration of about 1.5 times for int8 model:
 
 ## Benchmark App results
 
