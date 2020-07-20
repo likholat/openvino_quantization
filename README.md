@@ -25,6 +25,10 @@ To initialise OpenVINO environment variables use:
 ```bash
 source /opt/intel/openvino/bin/setupvars.sh
 ```
+and 
+```bash
+export PYTHONPATH=/opt/intel/openvino/deployment_tools/tools/post_training_optimization_toolkit/:$PYTHONPATH
+```
 
 Run the ```convert.py``` script before converting the model, it creates ```resnet_v2_101_299_opt.pb``` file in current directory:
 
