@@ -5,9 +5,9 @@ import argparse
 
 from addict import Dict
 from compression.graph import load_model, save_model
-from compression.api.data_loader import DataLoader
+from compression.data_loaders.data_loader import DataLoader
 from compression.engines.ie_engine import IEEngine
-from compression.api.metric import Metric
+from compression.custom.metric import Metric
 from compression.pipeline.initializer import create_pipeline
 
 parser = argparse.ArgumentParser(description="Quantizes OpenVino model to int8.",
