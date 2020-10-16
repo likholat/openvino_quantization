@@ -61,7 +61,7 @@ python3 evaluate.py --engine opvn --xml resnet_v2_101_299_opt.xml --dataset ILSV
 To quantizes the model to int8 model run:
 
 ```bash
-python3 calibration.py --xml resnet_v2_101_299_opt.xml --data ILSVRC2012_img_val --annotation ILSVRC2012_img_val/val.txt
+python3 quantize.py --xml resnet_v2_101_299_opt.xml --data ILSVRC2012_img_val --annotation ILSVRC2012_img_val/val.txt
 ```
 
 This script created ```/model/optimised``` folder in current folder with quantized model.

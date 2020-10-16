@@ -5,9 +5,9 @@ import argparse
 
 from addict import Dict
 from compression.graph import load_model, save_model
-from compression.data_loaders.data_loader import DataLoader
+from compression.api.data_loader import DataLoader
 from compression.engines.ie_engine import IEEngine
-from compression.custom.metric import Metric
+from compression.api.metric import Metric
 from compression.pipeline.initializer import create_pipeline
 
 parser = argparse.ArgumentParser(description="Quantizes OpenVino model to int8.",
@@ -111,39 +111,55 @@ class AccuracyMetric(Metric):
     def get_attributes(self):
         return {}
 
+# Dictionary with the FP32 model info
 model_config = Dict({
     'model_name': argv.model_name,
     "model": argv.xml,
     "weights": argv.xml.split('.xml')[0] + '.bin'
 })
-engine_config = {
+
+# Dictionary with the engine parameters
+engine_config = Dict({
     'device': 'CPU',
     'stat_requests_number': 4,
     'eval_requests_number': 4
-}
-dataset_config = {
+})
+
+# Dictionary witn input dataset info
+dataset_config = Dict({
     'data_source': argv.data,
     'annotation_file': argv.annotation,
-}
+})
+
+# Quantization algorithm settings
 algorithms = [
     {
-        'name': 'DefaultQuantization',
+        'name': 'DefaultQuantization', # Optimization algorithm name
         'params': {
             'target_device': 'CPU',
-            'preset': 'performance',
-            'stat_subset_size': 300
+            'preset': 'performance', # Preset [performance (default), accuracy] which controls the quantization mode 
+                                     # (symmetric and asymmetric respectively)
+            'stat_subset_size': 300  # Size of subset to calculate activations statistics that can be used
+                                     # for quantization parameters calculation.
         }
     }
 ]
 
+# Load the model.
 model = load_model(model_config)
 
+# Initialize the data loader and metric.
 data_loader = DatasetsDataLoader(dataset_config)
 metric = AccuracyMetric()
 
-loss = None
-engine = IEEngine(engine_config, data_loader, metric, loss)
+# Initialize the engine for metric calculation and statistics collection.
+engine = IEEngine(engine_config, data_loader, metric)
+
+# Initialize the engine for metric calculation and statistics collection.
 pipeline = create_pipeline(algorithms, engine)
 
+# Execute the pipeline.
 compressed_model = pipeline.run(model)
+
+# Save the compressed model.
 save_model(compressed_model, argv.int8_dir)
