@@ -1,3 +1,7 @@
+# Software Requirements 
+- TensorFlow 2.3.0
+- OpenVINO 2021.1
+
 # TensorFlow sample
 
 Link to find ResNet_V2_101 model:
@@ -39,8 +43,7 @@ python3 convert.py --graph resnet_v2_101_299_frozen.pb
 To convert TensorFlow model to Intermediate Representation:
 
 ```bash
-cd folder/for/IR/model
-python3 ~/openvino/model-optimizer/mo_tf.py --input_shape "[1,299,299,3]" --input_model resnet_v2_101_299_opt.pb 
+python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --input_shape "[1,299,299,3]" --input_model resnet_v2_101_299_opt.pb 
 ```
 
 To validate OpenVINO model on one image run:
@@ -58,7 +61,7 @@ python3 evaluate.py --engine opvn --xml resnet_v2_101_299_opt.xml --dataset ILSV
 To quantizes the model to int8 model run:
 
 ```bash
-python3 calibration.py --xml resnet_v2_101_299_opt.xml --data ILSVRC2012_img_val --annotation ILSVRC2012_img_val/val.txt
+python3 quantize.py --xml resnet_v2_101_299_opt.xml --data ILSVRC2012_img_val --annotation ILSVRC2012_img_val/val.txt
 ```
 
 This script created ```/model/optimised``` folder in current folder with quantized model.

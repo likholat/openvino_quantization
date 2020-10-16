@@ -6,7 +6,7 @@ import cv2 as cv
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--xml', help='.xml model path', default='resnet_v2_101_299_frozen.pb')
+    parser.add_argument('--graph', help='.pb or .xml model path', default='resnet_v2_101_299_frozen.pb')
     parser.add_argument('--dataset', help='database path', required=True)
     parser.add_argument('--engine', help='target engine', required=True, choices=['tf', 'opvn'])
     argv = parser.parse_args()
@@ -16,7 +16,7 @@ def main():
         network = TensorFlowClassification(argv.graph)
     else:
         from classification.classification_opvn import OpenVinoClassification
-        model_xml = os.path.join(argv.xml)
+        model_xml = os.path.join(argv.graph)
         model_bin = model_xml.split('.xml')[0] + '.bin'
 
         network = OpenVinoClassification(model_xml, model_bin)
@@ -43,7 +43,6 @@ def main():
 
         if label in results:
             top_5 += 1
-
 
     print()
     print('Top 1 accuracy: ' + str(top_1 / len(vals)))
