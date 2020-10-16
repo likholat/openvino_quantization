@@ -13,11 +13,10 @@ try:
     with tf.io.gfile.GFile(pb_file, 'rb') as f:
         graph_def.ParseFromString(f.read())
 except:
-    with tf.gfile.FastGFile(pb_file, 'rb') as f:
+    with tf.io.gfile.GFile(pb_file, 'rb') as f:
         graph_def.ParseFromString(f.read())
 
 graph_def = optimize_for_inference_lib.optimize_for_inference(graph_def, ['input'], ['output'], tf.float32.as_datatype_enum)
 
-with tf.gfile.FastGFile('resnet_v2_101_299_opt.pb', 'wb') as f:
+with tf.io.gfile.GFile('resnet_v2_101_299_opt.pb', 'wb') as f:
    f.write(graph_def.SerializeToString())
-   
