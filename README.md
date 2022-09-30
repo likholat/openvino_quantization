@@ -1,6 +1,8 @@
 # Software Requirements 
-- TensorFlow 2.3.0
-- OpenVINO 2021.1
+- TensorFlow 2.5.3
+- OpenVINO 2022.1
+
+OpenVINO Development Tools [installation instruction](https://docs.openvino.ai/latest/openvino_docs_install_guides_install_dev_tools.html)
 
 # TensorFlow sample
 
@@ -24,16 +26,6 @@ python3 evaluate.py --engine tf --graph resnet_v2_101_299_frozen.pb --dataset IL
 
 # OpenVINO sample
 
-To initialise OpenVINO environment variables use:
-
-```bash
-source /opt/intel/openvino/bin/setupvars.sh
-```
-and 
-```bash
-export PYTHONPATH=/opt/intel/openvino/deployment_tools/tools/post_training_optimization_toolkit/:$PYTHONPATH
-```
-
 Run the ```convert.py``` script before converting the model, it creates ```resnet_v2_101_299_opt.pb``` file in current directory:
 
 ```bash
@@ -43,19 +35,19 @@ python3 convert.py --graph resnet_v2_101_299_frozen.pb
 To convert TensorFlow model to Intermediate Representation:
 
 ```bash
-python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --input_shape "[1,299,299,3]" --input_model resnet_v2_101_299_opt.pb 
+mo --input_model resnet_v2_101_299_opt.pb --input_shape "[1,299,299,3]"
 ```
 
 To validate OpenVINO model on one image run:
 
 ```bash
-python3 demo_classification.py --engine opvn --xml resnet_v2_101_299_opt.xml --image example.jpeg 
+python3 demo_classification.py --engine opvn --graph resnet_v2_101_299_opt.xml --image example.jpeg 
 ```
 
 To validate OpenVINO model on ImageNet dataset run:
 
 ```bash
-python3 evaluate.py --engine opvn --xml resnet_v2_101_299_opt.xml --dataset ILSVRC2012_img_val
+python3 evaluate.py --engine opvn --graph resnet_v2_101_299_opt.xml --dataset ILSVRC2012_img_val
 ```
 
 To quantizes the model to int8 model run:
@@ -69,13 +61,13 @@ This script created ```/model/optimised``` folder in current folder with quantiz
 To validate int8 model on one image run:
 
 ```bash
-python3 demo_classification.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.xml --image example.jpeg 
+python3 demo_classification.py --engine opvn --graph /model/optimized/resnet_v2_101_299_opt.xml --image example.jpeg 
 ```
 
 To validate int8 model on ImageNet dataset run:
 
 ```bash
-python3 evaluate.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.xml --dataset ILSVRC2012_img_val
+python3 evaluate.py --engine opvn --graph /model/optimized/resnet_v2_101_299_opt.xml --dataset ILSVRC2012_img_val
 ```
 
 # Results
@@ -86,13 +78,15 @@ python3 evaluate.py --engine opvn --xml /model/optimized/resnet_v2_101_299_opt.x
 |:----------------:|:-------:|:-------:|
 | TensorFlow model | 0.69054 | 0.89814 |
 | OpenVINO model   | 0.69054 | 0.89814 |
-| INT8 model       | 0.69316 | 0.89776 |
+| INT8 model       | 0.69088 | 0.89714 |
 
 ## Benchmark App results
 
-Сomparing the ```benchmark_app``` results we got an acceleration of about 1.5 times for **INT8 model**:
+Сomparing the ```benchmark_app``` results we got an acceleration of about 1.9 times for **INT8 model**:
 
-|                  | Latency  | Throughput |
-|:----------------:|:--------:|:----------:|
-| OpenVINO model   | 45.98 ms | 21.75 FPS  |
-| INT8 model       | 29.22 ms | 34.23 FPS  |
+|                  | Latency (Median)  | Throughput |
+|:----------------:|:-----------------:|:----------:|
+| OpenVINO model   |     212.16 ms     | 18.02 FPS  |
+| INT8 model       |     112.41 ms     | 34.26 FPS  |
+
+Measured on Intel(R) Xeon(R) Gold 6338 CPU @ 2.00GHz
