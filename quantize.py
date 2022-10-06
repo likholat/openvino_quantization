@@ -4,11 +4,11 @@ import numpy as np
 import argparse
 
 from addict import Dict
-from compression.graph import load_model, save_model
-from compression.api.data_loader import DataLoader
-from compression.engines.ie_engine import IEEngine
-from compression.api.metric import Metric
-from compression.pipeline.initializer import create_pipeline
+from openvino.tools.pot import DataLoader
+from openvino.tools.pot import IEEngine
+from openvino.tools.pot import load_model, save_model
+from openvino.tools.pot import create_pipeline
+from openvino.tools.pot import Metric
 
 parser = argparse.ArgumentParser(description="Quantizes OpenVino model to int8.",
                                     add_help=True, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -21,7 +21,7 @@ parser.add_argument("--int8_dir", default="./model/optimized", help="INT8 direct
 
 argv = parser.parse_args()
 
-class DatasetsDataLoader(DataLoader):
+class ImageLoader(DataLoader):
  
     def __init__(self, config):
         if not isinstance(config, Dict):
@@ -149,7 +149,7 @@ algorithms = [
 model = load_model(model_config)
 
 # Initialize the data loader and metric.
-data_loader = DatasetsDataLoader(dataset_config)
+data_loader = ImageLoader(dataset_config)
 metric = AccuracyMetric()
 
 # Initialize the engine for metric calculation and statistics collection.
