@@ -88,3 +88,5 @@ python3 evaluate.py --engine opvn --graph /model/optimized/resnet_v2_101_299_opt
 |:----------------:|:-----------------:|:----------:|
 | OpenVINO model   |     212.16 ms     | 18.02 FPS  |
 | INT8 model       |     112.41 ms     | 34.26 FPS  |
+
+Measured on Intel(R) Xeon(R) Gold 6338 CPU @ 2.00GHz
